@@ -76,34 +76,9 @@ jobs:
 
   test:
     name: test
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: 🐋 Setup Docker on macOS
-        # macOSランナーの場合のみ、このステップを実行
-        if: runner.os == 'macOS'
-        run: |
-          brew install docker
-          brew install colima
-          colima start
-      - name: Run a Docker container
-        run: |
-          docker run --rm hello-world
-      # - name: Install Docker (macOS)
-      #   if: matrix.os == 'macos-latest'
-      #   run: |
-      #     brew install --cask docker
-      #     sudo /Applications/Docker.app/Contents/MacOS/Docker --unattended --install-privileged-components || true
-      #     open -a Docker
-      #     sleep 30
-      #     while ! docker system info > /dev/null 2>&1; do
-      #       echo "Waiting for Docker to start..."
-      #       sleep 5
-      #     done
-      #     echo "Docker is ready"
       - run: docker compose up -d
       - uses: sfackler/actions/rustup@master
         with:
