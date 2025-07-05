@@ -381,12 +381,12 @@ impl Client {
     /// use futures_util::{pin_mut, TryStreamExt};
     ///
     /// let params: Vec<String> = vec![
-    ///   *"first param".into(),
-    ///   *"second param".into(),
+    ///     "first param".to_string(),
+    ///     "second param".to_string(),
     /// ];
     /// let mut it = client.query_raw(
-    ///   *"SELECT foo FROM bar WHERE biz = $1 AND baz = $2",
-    ///   params,
+    ///     "SELECT foo FROM bar WHERE biz = $1 AND baz = $2",
+    ///     params,
     /// ).await?;
     ///
     /// pin_mut!(it);
@@ -448,12 +448,12 @@ impl Client {
     /// use tokio_postgres::types::Type;
     ///
     /// let params: Vec<(String, Type)> = vec![
-    ///   *("first param".into(), Type::TEXT),
-    ///   *("second param".into(), Type::TEXT),
+    ///     ("first param".to_string(), Type::TEXT),
+    ///     ("second param".to_string(), Type::TEXT),
     /// ];
     /// let mut it = client.query_typed_raw(
-    ///   *"SELECT foo FROM bar WHERE biz = $1 AND baz = $2",
-    ///   params,
+    ///     "SELECT foo FROM bar WHERE biz = $1 AND baz = $2",
+    ///     params,
     /// ).await?;
     ///
     /// pin_mut!(it);

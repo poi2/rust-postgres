@@ -68,8 +68,8 @@ impl Client {
     /// let bar = 1i32;
     /// let baz = true;
     /// let rows_updated = client.execute(
-    ///   *"UPDATE foo SET bar = $1 WHERE baz = $2",
-    ///   *&[&bar, &baz],
+    ///     "UPDATE foo SET bar = $1 WHERE baz = $2",
+    ///     &[&bar, &baz],
     /// )?;
     ///
     /// println!("{} rows updated", rows_updated);
@@ -171,11 +171,11 @@ impl Client {
     /// let baz = true;
     /// let row = client.query_opt("SELECT foo FROM bar WHERE baz = $1", &[&baz])?;
     /// match row {
-    ///   Some(row) => {
-    ///   **let foo: i32 = row.get("foo");
-    ///   **println!("foo: {}", foo);
-    ///   *}
-    ///   None => println!("no matching foo"),
+    ///     Some(row) => {
+    ///         let foo: i32 = row.get("foo");
+    ///         println!("foo: {}", foo);
+    ///     }
+    ///     None => println!("no matching foo"),
     /// }
     /// # Ok(())
     /// # }
@@ -229,12 +229,12 @@ impl Client {
     /// # let mut client = Client::connect("host=localhost user=postgres", NoTls)?;
     ///
     /// let params: Vec<String> = vec![
-    ///   *"first param".into(),
-    ///   *"second param".into(),
+    ///     "first param".to_string(),
+    ///     "second param".to_string(),
     /// ];
     /// let mut it = client.query_raw(
-    ///   *"SELECT foo FROM bar WHERE biz = $1 AND baz = $2",
-    ///   params,
+    ///     "SELECT foo FROM bar WHERE biz = $1 AND baz = $2",
+    ///     params,
     /// )?;
     ///
     /// while let Some(row) = it.next()? {
@@ -296,12 +296,12 @@ impl Client {
     /// # let mut client = Client::connect("host=localhost user=postgres", NoTls)?;
     ///
     /// let params: Vec<(String, Type)> = vec![
-    ///   *("first param".into(), Type::TEXT),
-    ///   *("second param".into(), Type::TEXT),
+    ///     ("first param".to_string(), Type::TEXT),
+    ///     ("second param".to_string(), Type::TEXT),
     /// ];
     /// let mut it = client.query_typed_raw(
-    ///   *"SELECT foo FROM bar WHERE biz = $1 AND baz = $2",
-    ///   params,
+    ///     "SELECT foo FROM bar WHERE biz = $1 AND baz = $2",
+    ///     params,
     /// )?;
     ///
     /// while let Some(row) = it.next()? {
@@ -364,8 +364,8 @@ impl Client {
     /// let mut client = Client::connect("host=localhost user=postgres", NoTls)?;
     ///
     /// let statement = client.prepare_typed(
-    ///   *"SELECT name FROM people WHERE id = $1",
-    ///   *&[Type::INT8],
+    ///     "SELECT name FROM people WHERE id = $1",
+    ///     &[Type::INT8],
     /// )?;
     ///
     /// for id in 0..10 {
@@ -526,8 +526,8 @@ impl Client {
     /// let mut client = Client::connect("host=localhost user=postgres", NoTls)?;
     ///
     /// let mut transaction = client.build_transaction()
-    ///   *.isolation_level(IsolationLevel::RepeatableRead)
-    ///   *.start()?;
+    ///     .isolation_level(IsolationLevel::RepeatableRead)
+    ///     .start()?;
     /// transaction.execute("UPDATE foo SET bar = 10", &[])?;
     /// // ...
     ///
@@ -563,19 +563,19 @@ impl Client {
     /// let cancel_token = client.cancel_token();
     ///
     /// thread::spawn(move || {
-    ///   *// Abort the query after 5s.
+    ///   // Abort the query after 5s.
     ///   thread::sleep(Duration::from_secs(5));
     ///   let _ = cancel_token.cancel_query(NoTls);
     /// });
     ///
     /// match client.simple_query("SELECT long_running_query()") {
     ///   Err(e) if e.code() == Some(&SqlState::QUERY_CANCELED) => {
-    ///   **// Handle canceled query.
-    ///   *}
+    ///     // Handle canceled query.
+    ///   }
     ///   Err(err) => return Err(err.into()),
     ///   Ok(rows) => {
-    ///   **// ...
-    ///   *}
+    ///     // ...
+    ///   }
     /// }
     /// // ...
     ///
