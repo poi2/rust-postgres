@@ -1,4 +1,4 @@
-//! Rows.
+// Rows.
 
 use crate::row::sealed::{AsName, Sealed};
 use crate::simple_query::SimpleColumn;

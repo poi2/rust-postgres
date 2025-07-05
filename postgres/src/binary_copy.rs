@@ -1,4 +1,4 @@
-//! Utilities for working with the PostgreSQL binary copy format.
+// Utilities for working with the PostgreSQL binary copy format.
 
 use crate::connection::ConnectionRef;
 use crate::types::{BorrowToSql, ToSql, Type};

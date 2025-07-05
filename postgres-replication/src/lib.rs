@@ -1,4 +1,4 @@
-//! Utilities for working with the PostgreSQL replication copy both format.
+// Utilities for working with the PostgreSQL replication copy both format.
 
 use std::pin::Pin;
 use std::task::{Context, Poll};

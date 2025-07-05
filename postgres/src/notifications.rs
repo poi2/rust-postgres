@@ -1,4 +1,4 @@
-//! Asynchronous notifications.
+// Asynchronous notifications.
 
 use crate::connection::ConnectionRef;
 use crate::{Error, Notification};

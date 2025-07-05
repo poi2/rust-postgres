@@ -1,10 +1,10 @@
-//! Functions to encrypt a password in the client.
-//!
-//! This is intended to be used by client applications that wish to
-//! send commands like `ALTER USER joe PASSWORD 'pwd'`. The password
-//! need not be sent in cleartext if it is encrypted on the client
-//! side. This is good because it ensures the cleartext password won't
-//! end up in logs pg_stat displays, etc.
+// Functions to encrypt a password in the client.
+//
+// This is intended to be used by client applications that wish to
+// send commands like `ALTER USER joe PASSWORD 'pwd'`. The password
+// need not be sent in cleartext if it is encrypted on the client
+// side. This is good because it ensures the cleartext password won't
+// end up in logs pg_stat displays, etc.
 
 use crate::authentication::sasl;
 use base64::display::Base64Display;

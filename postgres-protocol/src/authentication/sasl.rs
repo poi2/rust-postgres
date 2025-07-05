@@ -1,4 +1,4 @@
-//! SASL-based authentication support.
+// SASL-based authentication support.
 
 use base64::Engine;
 use base64::display::Base64Display;

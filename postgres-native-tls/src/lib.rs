@@ -51,7 +51,7 @@
 // # Ok(())
 // # }
 // ```
-// #![warn(rust_2018_idioms, clippy::all, missing_docs)]
+#![warn(rust_2018_idioms, clippy::all)]
 
 use std::future::Future;
 use std::io;

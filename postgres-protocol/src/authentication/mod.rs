@@ -1,4 +1,4 @@
-//! Authentication protocol support.
+// Authentication protocol support.
 use md5::{Digest, Md5};
 
 pub mod sasl;

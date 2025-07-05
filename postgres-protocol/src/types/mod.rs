@@ -1,4 +1,4 @@
-//! Conversions to and from Postgres's binary format for various types.
+// Conversions to and from Postgres's binary format for various types.
 use byteorder::{BigEndian, ByteOrder, ReadBytesExt};
 use bytes::{BufMut, BytesMut};
 use fallible_iterator::FallibleIterator;

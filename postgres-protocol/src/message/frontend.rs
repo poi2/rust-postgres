@@ -1,4 +1,4 @@
-//! Frontend message serialization.
+// Frontend message serialization.
 #![allow(missing_docs)]
 
 use byteorder::{BigEndian, ByteOrder};

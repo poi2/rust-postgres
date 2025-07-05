@@ -1,4 +1,4 @@
-//! Connection configuration.
+// Connection configuration.
 
 #[cfg(feature = "runtime")]
 use crate::Socket;

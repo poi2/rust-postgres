@@ -1,4 +1,4 @@
-//! Utilities for working with the PostgreSQL binary copy format.
+// Utilities for working with the PostgreSQL binary copy format.
 
 use crate::types::{FromSql, IsNull, ToSql, Type, WrongType};
 use crate::{CopyInSink, CopyOutStream, Error, slice_iter};

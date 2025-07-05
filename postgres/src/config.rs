@@ -1,4 +1,4 @@
-//! Connection configuration.
+// Connection configuration.
 
 use crate::Client;
 use crate::connection::Connection;
