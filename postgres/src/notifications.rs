@@ -1,9 +1,9 @@
-//! Asynchronous notifications.
+// Asynchronous notifications.
 
 use crate::connection::ConnectionRef;
 use crate::{Error, Notification};
 use fallible_iterator::FallibleIterator;
-use futures_util::{ready, FutureExt};
+use futures_util::{FutureExt, ready};
 use std::pin::Pin;
 use std::task::Poll;
 use std::time::Duration;

@@ -1,8 +1,8 @@
+use crate::Error;
 use crate::config::SslMode;
 use crate::maybe_tls_stream::MaybeTlsStream;
-use crate::tls::private::ForcePrivateApi;
 use crate::tls::TlsConnect;
-use crate::Error;
+use crate::tls::private::ForcePrivateApi;
 use bytes::BytesMut;
 use postgres_protocol::message::frontend;
 use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
@@ -20,7 +20,7 @@ where
     match mode {
         SslMode::Disable => return Ok(MaybeTlsStream::Raw(stream)),
         SslMode::Prefer if !tls.can_connect(ForcePrivateApi) => {
-            return Ok(MaybeTlsStream::Raw(stream))
+            return Ok(MaybeTlsStream::Raw(stream));
         }
         SslMode::Prefer | SslMode::Require | SslMode::VerifyCa | SslMode::VerifyFull => {}
     }
@@ -35,7 +35,7 @@ where
     if buf[0] != b'S' {
         match mode {
             SslMode::Require | SslMode::VerifyCa | SslMode::VerifyFull => {
-                return Err(Error::tls("server does not support TLS".into()))
+                return Err(Error::tls("server does not support TLS".into()));
             }
             SslMode::Disable | SslMode::Prefer => return Ok(MaybeTlsStream::Raw(stream)),
         }

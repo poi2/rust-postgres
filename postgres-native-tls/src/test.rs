@@ -12,7 +12,7 @@ where
     T: TlsConnect<TcpStream>,
     T::Stream: 'static + Send,
 {
-    let stream = TcpStream::connect("127.0.0.1:5433").await.unwrap();
+    let stream = TcpStream::connect("127.0.0.1:5432").await.unwrap();
 
     let builder = s.parse::<tokio_postgres::Config>().unwrap();
     let (client, connection) = builder.connect_raw(stream, tls).await.unwrap();
@@ -84,7 +84,7 @@ async fn runtime() {
     let connector = MakeTlsConnector::new(connector);
 
     let (client, connection) = tokio_postgres::connect(
-        "host=localhost port=5433 user=postgres sslmode=require",
+        "host=localhost port=5432 user=postgres sslmode=require",
         connector,
     )
     .await

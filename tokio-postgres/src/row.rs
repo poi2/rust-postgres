@@ -1,4 +1,4 @@
-//! Rows.
+// Rows.
 
 use crate::row::sealed::{AsName, Sealed};
 use crate::simple_query::SimpleColumn;
@@ -79,9 +79,9 @@ impl RowIndex for str {
     }
 }
 
-impl<'a, T> Sealed for &'a T where T: ?Sized + Sealed {}
+impl<T> Sealed for &T where T: ?Sized + Sealed {}
 
-impl<'a, T> RowIndex for &'a T
+impl<T> RowIndex for &T
 where
     T: ?Sized + RowIndex,
 {
@@ -150,7 +150,7 @@ impl Row {
     {
         match self.get_inner(&idx) {
             Ok(ok) => ok,
-            Err(err) => panic!("error retrieving column {}: {}", idx, err),
+            Err(err) => panic!("error retrieving column {idx}: {err}"),
         }
     }
 
@@ -248,7 +248,7 @@ impl SimpleQueryRow {
     {
         match self.get_inner(&idx) {
             Ok(ok) => ok,
-            Err(err) => panic!("error retrieving column {}: {}", idx, err),
+            Err(err) => panic!("error retrieving column {idx}: {err}"),
         }
     }
 

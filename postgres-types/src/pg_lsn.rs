@@ -1,5 +1,5 @@
-//! Log Sequence Number (LSN) type for PostgreSQL Write-Ahead Log
-//! (WAL), also known as the transaction log.
+// Log Sequence Number (LSN) type for PostgreSQL Write-Ahead Log
+// (WAL), also known as the transaction log.
 
 use bytes::BytesMut;
 use postgres_protocol::types;
@@ -52,7 +52,7 @@ impl fmt::Display for PgLsn {
 
 impl fmt::Debug for PgLsn {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.write_fmt(format_args!("{}", self))
+        f.write_fmt(format_args!("{self}"))
     }
 }
 

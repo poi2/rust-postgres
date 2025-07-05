@@ -1,9 +1,9 @@
 use crate::client::{InnerClient, Responses};
 use crate::codec::FrontendMessage;
-use crate::{simple_query, Error};
+use crate::{Error, simple_query};
 use bytes::{Buf, BufMut, Bytes, BytesMut};
 use futures_channel::mpsc;
-use futures_util::{ready, Sink, SinkExt, Stream, StreamExt};
+use futures_util::{Sink, SinkExt, Stream, StreamExt, ready};
 use log::debug;
 use pin_project_lite::pin_project;
 use postgres_protocol::message::backend::Message;
@@ -57,7 +57,7 @@ enum CopyBothState {
 ///
 /// ```ignore
 ///                                          |
-///          <tokio_postgres owned>          |    <userland owned>
+///   <tokio_postgres owned>                 |    <userland owned>
 ///                                          |
 ///  pg -> Connection -> CopyBothReceiver ---+---> CopyBothDuplex
 ///                                          |          ^   \
@@ -344,7 +344,7 @@ pub async fn copy_both_simple<T>(
 where
     T: Buf + 'static + Send,
 {
-    debug!("executing copy both query {}", query);
+    debug!("executing copy both query {query}");
 
     let buf = simple_query::encode(client, query)?;
 

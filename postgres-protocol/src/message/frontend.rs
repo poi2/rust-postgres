@@ -1,4 +1,4 @@
-//! Frontend message serialization.
+// Frontend message serialization.
 #![allow(missing_docs)]
 
 use byteorder::{BigEndian, ByteOrder};
@@ -8,7 +8,7 @@ use std::error::Error;
 use std::io;
 use std::marker;
 
-use crate::{write_nullable, FromUsize, IsNull, Oid};
+use crate::{FromUsize, IsNull, Oid, write_nullable};
 
 #[inline]
 fn write_body<F, E>(buf: &mut BytesMut, f: F) -> Result<(), E>

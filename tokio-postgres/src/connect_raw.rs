@@ -7,7 +7,7 @@ use crate::{Client, Connection, Error};
 use bytes::BytesMut;
 use fallible_iterator::FallibleIterator;
 use futures_channel::mpsc;
-use futures_util::{ready, Sink, SinkExt, Stream, TryStreamExt};
+use futures_util::{Sink, SinkExt, Stream, TryStreamExt, ready};
 use postgres_protocol::authentication;
 use postgres_protocol::authentication::sasl;
 use postgres_protocol::authentication::sasl::ScramSha256;
@@ -193,7 +193,7 @@ where
         | Some(Message::AuthenticationSspi) => {
             return Err(Error::authentication(
                 "unsupported authentication method".into(),
-            ))
+            ));
         }
         Some(Message::ErrorResponse(body)) => return Err(Error::db(body)),
         Some(_) => return Err(Error::unexpected_message()),

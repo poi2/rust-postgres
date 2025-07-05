@@ -4,7 +4,7 @@ use crate::connect_raw::connect_raw;
 use crate::connect_socket::connect_socket;
 use crate::tls::MakeTlsConnect;
 use crate::{Client, Config, Connection, Error, SimpleQueryMessage, Socket};
-use futures_util::{future, pin_mut, Future, FutureExt, Stream};
+use futures_util::{Future, FutureExt, Stream, future, pin_mut};
 use rand::seq::SliceRandom;
 use std::task::Poll;
 use std::{cmp, io};

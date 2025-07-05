@@ -1,8 +1,8 @@
-//! SASL-based authentication support.
+// SASL-based authentication support.
 
+use base64::Engine;
 use base64::display::Base64Display;
 use base64::engine::general_purpose::STANDARD;
-use base64::Engine;
 use hmac::{Hmac, Mac};
 use rand::{self, Rng};
 use sha2::digest::FixedOutput;
@@ -180,7 +180,7 @@ impl ScramSha256 {
                     password,
                     channel_binding,
                 } => (nonce, password, channel_binding),
-                _ => return Err(io::Error::new(io::ErrorKind::Other, "invalid SCRAM state")),
+                _ => return Err(io::Error::other("invalid SCRAM state")),
             };
 
         let message =
@@ -252,7 +252,7 @@ impl ScramSha256 {
                 salted_password,
                 auth_message,
             } => (salted_password, auth_message),
-            _ => return Err(io::Error::new(io::ErrorKind::Other, "invalid SCRAM state")),
+            _ => return Err(io::Error::other("invalid SCRAM state")),
         };
 
         let message =
@@ -262,10 +262,7 @@ impl ScramSha256 {
 
         let verifier = match parsed {
             ServerFinalMessage::Error(e) => {
-                return Err(io::Error::new(
-                    io::ErrorKind::Other,
-                    format!("SCRAM error: {}", e),
-                ));
+                return Err(io::Error::other(format!("SCRAM error: {e}")));
             }
             ServerFinalMessage::Verifier(verifier) => verifier,
         };
@@ -305,10 +302,8 @@ impl<'a> Parser<'a> {
         match self.it.next() {
             Some((_, c)) if c == target => Ok(()),
             Some((i, c)) => {
-                let m = format!(
-                    "unexpected character at byte {}: expected `{}` but got `{}",
-                    i, target, c
-                );
+                let m =
+                    format!("unexpected character at byte {i}: expected `{target}` but got `{c}");
                 Err(io::Error::new(io::ErrorKind::InvalidInput, m))
             }
             None => Err(io::Error::new(
@@ -374,7 +369,7 @@ impl<'a> Parser<'a> {
         match self.it.peek() {
             Some(&(i, _)) => Err(io::Error::new(
                 io::ErrorKind::InvalidInput,
-                format!("unexpected trailing data at byte {}", i),
+                format!("unexpected trailing data at byte {i}"),
             )),
             None => Ok(()),
         }
@@ -457,11 +452,9 @@ mod test {
         let nonce = "9IZ2O01zb9IgiIZ1WJ/zgpJB";
 
         let client_first = "n,,n=,r=9IZ2O01zb9IgiIZ1WJ/zgpJB";
-        let server_first =
-            "r=9IZ2O01zb9IgiIZ1WJ/zgpJBjx/oIRLs02gGSHcw1KEty3eY,s=fs3IXBy7U7+IvVjZ,i\
+        let server_first = "r=9IZ2O01zb9IgiIZ1WJ/zgpJBjx/oIRLs02gGSHcw1KEty3eY,s=fs3IXBy7U7+IvVjZ,i\
              =4096";
-        let client_final =
-            "c=biws,r=9IZ2O01zb9IgiIZ1WJ/zgpJBjx/oIRLs02gGSHcw1KEty3eY,p=AmNKosjJzS3\
+        let client_final = "c=biws,r=9IZ2O01zb9IgiIZ1WJ/zgpJBjx/oIRLs02gGSHcw1KEty3eY,p=AmNKosjJzS3\
              1NTlQYNs5BTeQjdHdk7lOflDo5re2an8=";
         let server_final = "v=U+ppxD5XUKtradnv8e2MkeupiA8FU87Sg8CXzXHDAzw=";
 

@@ -1,3 +1,5 @@
+#[cfg(feature = "runtime")]
+use crate::Socket;
 use crate::codec::FrontendMessage;
 use crate::connection::RequestMessages;
 use crate::copy_out::CopyOutStream;
@@ -6,11 +8,9 @@ use crate::query::RowStream;
 use crate::tls::MakeTlsConnect;
 use crate::tls::TlsConnect;
 use crate::types::{BorrowToSql, ToSql, Type};
-#[cfg(feature = "runtime")]
-use crate::Socket;
 use crate::{
-    bind, query, slice_iter, CancelToken, Client, CopyInSink, Error, Portal, Row,
-    SimpleQueryMessage, Statement, ToStatement,
+    CancelToken, Client, CopyInSink, Error, Portal, Row, SimpleQueryMessage, Statement,
+    ToStatement, bind, query, slice_iter,
 };
 use bytes::Buf;
 use futures_util::TryStreamExt;
@@ -314,8 +314,8 @@ impl<'a> Transaction<'a> {
 
     async fn _savepoint(&mut self, name: Option<String>) -> Result<Transaction<'_>, Error> {
         let depth = self.savepoint.as_ref().map_or(0, |sp| sp.depth) + 1;
-        let name = name.unwrap_or_else(|| format!("sp_{}", depth));
-        let query = format!("SAVEPOINT {}", name);
+        let name = name.unwrap_or_else(|| format!("sp_{depth}"));
+        let query = format!("SAVEPOINT {name}");
         self.batch_execute(&query).await?;
 
         Ok(Transaction {

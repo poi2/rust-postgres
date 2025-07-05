@@ -45,14 +45,14 @@ where
 
     for (val, repr) in checks {
         let rows = client
-            .query(&*format!("SELECT {}::{}", repr, sql_type), &[])
+            .query(&*format!("SELECT {repr}::{sql_type}"), &[])
             .await
             .unwrap();
         let result = rows[0].get(0);
         assert_eq!(val, &result);
 
         let rows = client
-            .query(&*format!("SELECT $1::{}", sql_type), &[&val])
+            .query(&*format!("SELECT $1::{sql_type}"), &[&val])
             .await
             .unwrap();
         let result = rows[0].get(0);
@@ -387,7 +387,7 @@ where
     let client = connect("user=postgres").await;
 
     let stmt = client
-        .prepare(&format!("SELECT 'NaN'::{}", sql_type))
+        .prepare(&format!("SELECT 'NaN'::{sql_type}"))
         .await
         .unwrap();
     let rows = client.query(&stmt, &[]).await.unwrap();
@@ -466,7 +466,7 @@ async fn test_slice_wrong_type() {
     let err = client.query(&stmt, &[&&[&"hi"][..]]).await.err().unwrap();
     match err.source() {
         Some(e) if e.is::<WrongType>() => {}
-        _ => panic!("Unexpected error {:?}", err),
+        _ => panic!("Unexpected error {err:?}"),
     };
 }
 
@@ -478,7 +478,7 @@ async fn test_slice_range() {
     let err = client.query(&stmt, &[&&[&1i64][..]]).await.err().unwrap();
     match err.source() {
         Some(e) if e.is::<WrongType>() => {}
-        _ => panic!("Unexpected error {:?}", err),
+        _ => panic!("Unexpected error {err:?}"),
     };
 }
 
@@ -570,7 +570,7 @@ async fn composite() {
             assert_eq!(fields[2].name(), "price");
             assert_eq!(fields[2].type_(), &Type::NUMERIC);
         }
-        ref t => panic!("bad type {:?}", t),
+        ref t => panic!("bad type {t:?}"),
     }
 }
 

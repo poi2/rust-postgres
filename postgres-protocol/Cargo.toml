@@ -2,7 +2,7 @@
 name = "postgres-protocol"
 version = "0.6.7"
 authors = ["Steven Fackler <sfackler@gmail.com>"]
-edition = "2018"
+edition = "2024"
 description = "Low level Postgres protocol APIs"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/sfackler/rust-postgres"
@@ -17,10 +17,10 @@ base64 = "0.22"
 byteorder = "1.0"
 bytes = "1.0"
 fallible-iterator = "0.2"
+getrandom = { version = "0.2", optional = true }
 hmac = "0.12"
 md-5 = "0.10"
 memchr = "2.0"
 rand = "0.8"
 sha2 = "0.10"
 stringprep = "0.1"
-getrandom = { version = "0.2", optional = true }

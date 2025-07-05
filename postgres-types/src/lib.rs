@@ -1,187 +1,187 @@
-//! Conversions to and from Postgres types.
-//!
-//! This crate is used by the `tokio-postgres` and `postgres` crates. You normally don't need to depend directly on it
-//! unless you want to define your own `ToSql` or `FromSql` definitions.
-//!
-//! # Derive
-//!
-//! If the `derive` cargo feature is enabled, you can derive `ToSql` and `FromSql` implementations for custom Postgres
-//! types. Explicitly, modify your `Cargo.toml` file to include the following:
-//!
-//! ```toml
-//! [dependencies]
-//! postgres-types = { version = "0.X.X", features = ["derive"] }
-//! ```
-//!
-//! ## Enums
-//!
-//! Postgres enums correspond to C-like enums in Rust:
-//!
-//! ```sql
-//! CREATE TYPE "Mood" AS ENUM (
-//!     'Sad',
-//!     'Ok',
-//!     'Happy'
-//! );
-//! ```
-//!
-//! ```rust
-//! # #[cfg(feature = "derive")]
-//! use postgres_types::{ToSql, FromSql};
-//!
-//! # #[cfg(feature = "derive")]
-//! #[derive(Debug, ToSql, FromSql)]
-//! enum Mood {
-//!     Sad,
-//!     Ok,
-//!     Happy,
-//! }
-//! ```
-//!
-//! ## Domains
-//!
-//! Postgres domains correspond to tuple structs with one member in Rust:
-//!
-//! ```sql
-//! CREATE DOMAIN "SessionId" AS BYTEA CHECK(octet_length(VALUE) = 16);
-//! ```
-//!
-//! ```rust
-//! # #[cfg(feature = "derive")]
-//! use postgres_types::{ToSql, FromSql};
-//!
-//! # #[cfg(feature = "derive")]
-//! #[derive(Debug, ToSql, FromSql)]
-//! struct SessionId(Vec<u8>);
-//! ```
-//!
-//! ## Newtypes
-//!
-//! The `#[postgres(transparent)]` attribute can be used on a single-field tuple struct to create a
-//! Rust-only wrapper type that will use the [`ToSql`] & [`FromSql`] implementation of the inner
-//! value :
-//! ```rust
-//! # #[cfg(feature = "derive")]
-//! use postgres_types::{ToSql, FromSql};
-//!
-//! # #[cfg(feature = "derive")]
-//! #[derive(Debug, ToSql, FromSql)]
-//! #[postgres(transparent)]
-//! struct UserId(i32);
-//! ```
-//!
-//! ## Composites
-//!
-//! Postgres composite types correspond to structs in Rust:
-//!
-//! ```sql
-//! CREATE TYPE "InventoryItem" AS (
-//!     name TEXT,
-//!     supplier_id INT,
-//!     price DOUBLE PRECISION
-//! );
-//! ```
-//!
-//! ```rust
-//! # #[cfg(feature = "derive")]
-//! use postgres_types::{ToSql, FromSql};
-//!
-//! # #[cfg(feature = "derive")]
-//! #[derive(Debug, ToSql, FromSql)]
-//! struct InventoryItem {
-//!     name: String,
-//!     supplier_id: i32,
-//!     price: Option<f64>,
-//! }
-//! ```
-//!
-//! ## Naming
-//!
-//! The derived implementations will enforce exact matches of type, field, and variant names between the Rust and
-//! Postgres types. The `#[postgres(name = "...")]` attribute can be used to adjust the name on a type, variant, or
-//! field:
-//!
-//! ```sql
-//! CREATE TYPE mood AS ENUM (
-//!     'sad',
-//!     'ok',
-//!     'happy'
-//! );
-//! ```
-//!
-//! ```rust
-//! # #[cfg(feature = "derive")]
-//! use postgres_types::{ToSql, FromSql};
-//!
-//! # #[cfg(feature = "derive")]
-//! #[derive(Debug, ToSql, FromSql)]
-//! #[postgres(name = "mood")]
-//! enum Mood {
-//!     #[postgres(name = "sad")]
-//!     Sad,
-//!     #[postgres(name = "ok")]
-//!     Ok,
-//!     #[postgres(name = "happy")]
-//!     Happy,
-//! }
-//! ```
-//!
-//! Alternatively, the `#[postgres(rename_all = "...")]` attribute can be used to rename all fields or variants
-//! with the chosen casing convention. This will not affect the struct or enum's type name. Note that
-//! `#[postgres(name = "...")]` takes precendence when used in conjunction with `#[postgres(rename_all = "...")]`:
-//!
-//! ```rust
-//! # #[cfg(feature = "derive")]
-//! use postgres_types::{ToSql, FromSql};
-//!
-//! # #[cfg(feature = "derive")]
-//! #[derive(Debug, ToSql, FromSql)]
-//! #[postgres(name = "mood", rename_all = "snake_case")]
-//! enum Mood {
-//!     #[postgres(name = "ok")]
-//!     Ok,             // ok
-//!     VeryHappy,      // very_happy
-//! }
-//! ```
-//!
-//! The following case conventions are supported:
-//! - `"lowercase"`
-//! - `"UPPERCASE"`
-//! - `"PascalCase"`
-//! - `"camelCase"`
-//! - `"snake_case"`
-//! - `"SCREAMING_SNAKE_CASE"`
-//! - `"kebab-case"`
-//! - `"SCREAMING-KEBAB-CASE"`
-//! - `"Train-Case"`
-//!
-//! ## Allowing Enum Mismatches
-//!
-//! By default the generated implementation of [`ToSql`] & [`FromSql`] for enums will require an exact match of the enum
-//! variants between the Rust and Postgres types.
-//! To allow mismatches, the `#[postgres(allow_mismatch)]` attribute can be used on the enum definition:
-//!
-//! ```sql
-//! CREATE TYPE mood AS ENUM (
-//!   'Sad',
-//!   'Ok',
-//!   'Happy'
-//! );
-//! ```
-//!
-//! ```rust
-//! # #[cfg(feature = "derive")]
-//! use postgres_types::{ToSql, FromSql};
-//!
-//! # #[cfg(feature = "derive")]
-//! #[derive(Debug, ToSql, FromSql)]
-//! #[postgres(allow_mismatch)]
-//! enum Mood {
-//!    Happy,
-//!    Meh,
-//! }
-//! ```
-#![warn(clippy::all, rust_2018_idioms, missing_docs)]
+// Conversions to and from Postgres types.
+//
+// This crate is used by the `tokio-postgres` and `postgres` crates. You normally don't need to depend directly on it
+// unless you want to define your own `ToSql` or `FromSql` definitions.
+//
+// # Derive
+//
+// If the `derive` cargo feature is enabled, you can derive `ToSql` and `FromSql` implementations for custom Postgres
+// types. Explicitly, modify your `Cargo.toml` file to include the following:
+//
+// ```toml
+// [dependencies]
+// postgres-types = { version = "0.X.X", features = ["derive"] }
+// ```
+//
+// ## Enums
+//
+// Postgres enums correspond to C-like enums in Rust:
+//
+// ```sql
+// CREATE TYPE "Mood" AS ENUM (
+//     'Sad',
+//     'Ok',
+//     'Happy'
+// );
+// ```
+//
+// ```rust
+// # #[cfg(feature = "derive")]
+// use postgres_types::{ToSql, FromSql};
+//
+// # #[cfg(feature = "derive")]
+// #[derive(Debug, ToSql, FromSql)]
+// enum Mood {
+//     Sad,
+//     Ok,
+//     Happy,
+// }
+// ```
+//
+// ## Domains
+//
+// Postgres domains correspond to tuple structs with one member in Rust:
+//
+// ```sql
+// CREATE DOMAIN "SessionId" AS BYTEA CHECK(octet_length(VALUE) = 16);
+// ```
+//
+// ```rust
+// # #[cfg(feature = "derive")]
+// use postgres_types::{ToSql, FromSql};
+//
+// # #[cfg(feature = "derive")]
+// #[derive(Debug, ToSql, FromSql)]
+// struct SessionId(Vec<u8>);
+// ```
+//
+// ## Newtypes
+//
+// The `#[postgres(transparent)]` attribute can be used on a single-field tuple struct to create a
+// Rust-only wrapper type that will use the [`ToSql`] & [`FromSql`] implementation of the inner
+// value :
+// ```rust
+// # #[cfg(feature = "derive")]
+// use postgres_types::{ToSql, FromSql};
+//
+// # #[cfg(feature = "derive")]
+// #[derive(Debug, ToSql, FromSql)]
+// #[postgres(transparent)]
+// struct UserId(i32);
+// ```
+//
+// ## Composites
+//
+// Postgres composite types correspond to structs in Rust:
+//
+// ```sql
+// CREATE TYPE "InventoryItem" AS (
+//     name TEXT,
+//     supplier_id INT,
+//     price DOUBLE PRECISION
+// );
+// ```
+//
+// ```rust
+// # #[cfg(feature = "derive")]
+// use postgres_types::{ToSql, FromSql};
+//
+// # #[cfg(feature = "derive")]
+// #[derive(Debug, ToSql, FromSql)]
+// struct InventoryItem {
+//     name: String,
+//     supplier_id: i32,
+//     price: Option<f64>,
+// }
+// ```
+//
+// ## Naming
+//
+// The derived implementations will enforce exact matches of type, field, and variant names between the Rust and
+// Postgres types. The `#[postgres(name = "...")]` attribute can be used to adjust the name on a type, variant, or
+// field:
+//
+// ```sql
+// CREATE TYPE mood AS ENUM (
+//     'sad',
+//     'ok',
+//     'happy'
+// );
+// ```
+//
+// ```rust
+// # #[cfg(feature = "derive")]
+// use postgres_types::{ToSql, FromSql};
+//
+// # #[cfg(feature = "derive")]
+// #[derive(Debug, ToSql, FromSql)]
+// #[postgres(name = "mood")]
+// enum Mood {
+//     #[postgres(name = "sad")]
+//     Sad,
+//     #[postgres(name = "ok")]
+//     Ok,
+//     #[postgres(name = "happy")]
+//     Happy,
+// }
+// ```
+//
+// Alternatively, the `#[postgres(rename_all = "...")]` attribute can be used to rename all fields or variants
+// with the chosen casing convention. This will not affect the struct or enum's type name. Note that
+// `#[postgres(name = "...")]` takes precendence when used in conjunction with `#[postgres(rename_all = "...")]`:
+//
+// ```rust
+// # #[cfg(feature = "derive")]
+// use postgres_types::{ToSql, FromSql};
+//
+// # #[cfg(feature = "derive")]
+// #[derive(Debug, ToSql, FromSql)]
+// #[postgres(name = "mood", rename_all = "snake_case")]
+// enum Mood {
+//     #[postgres(name = "ok")]
+//     Ok,             // ok
+//     VeryHappy,      // very_happy
+// }
+// ```
+//
+// The following case conventions are supported:
+// - `"lowercase"`
+// - `"UPPERCASE"`
+// - `"PascalCase"`
+// - `"camelCase"`
+// - `"snake_case"`
+// - `"SCREAMING_SNAKE_CASE"`
+// - `"kebab-case"`
+// - `"SCREAMING-KEBAB-CASE"`
+// - `"Train-Case"`
+//
+// ## Allowing Enum Mismatches
+//
+// By default the generated implementation of [`ToSql`] & [`FromSql`] for enums will require an exact match of the enum
+// variants between the Rust and Postgres types.
+// To allow mismatches, the `#[postgres(allow_mismatch)]` attribute can be used on the enum definition:
+//
+// ```sql
+// CREATE TYPE mood AS ENUM (
+//   'Sad',
+//   'Ok',
+//   'Happy'
+// );
+// ```
+//
+// ```rust
+// # #[cfg(feature = "derive")]
+// use postgres_types::{ToSql, FromSql};
+//
+// # #[cfg(feature = "derive")]
+// #[derive(Debug, ToSql, FromSql)]
+// #[postgres(allow_mismatch)]
+// enum Mood {
+//    Happy,
+//    Meh,
+// }
+// ```
+#![warn(clippy::all, rust_2018_idioms)]
 use fallible_iterator::FallibleIterator;
 use postgres_protocol::types::{self, ArrayDimension};
 use std::any::type_name;
@@ -313,7 +313,7 @@ impl fmt::Display for Type {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self.schema() {
             "public" | "pg_catalog" => {}
-            schema => write!(fmt, "{}.", schema)?,
+            schema => write!(fmt, "{schema}.")?,
         }
         fmt.write_str(self.name())
     }
@@ -619,16 +619,14 @@ impl<'a, T: FromSql<'a>, const N: usize> FromSql<'a> for [T; N] {
             let v = values
                 .next()?
                 .ok_or_else(|| -> Box<dyn Error + Sync + Send> {
-                    format!("too few elements in array (expected {}, got {})", N, i).into()
+                    format!("too few elements in array (expected {N}, got {i})").into()
                 })?;
             T::from_sql_nullable(member_type, v)
         })?;
         if values.next()?.is_some() {
-            return Err(format!(
-                "excess elements in array (expected {}, got more than that)",
-                N,
-            )
-            .into());
+            return Err(
+                format!("excess elements in array (expected {N}, got more than that)",).into(),
+            );
         }
 
         Ok(out)
@@ -908,7 +906,7 @@ pub enum Format {
     Binary,
 }
 
-impl<'a, T> ToSql for &'a T
+impl<T> ToSql for &T
 where
     T: ToSql,
 {
@@ -949,7 +947,7 @@ impl<T: ToSql> ToSql for Option<T> {
 
     fn encode_format(&self, ty: &Type) -> Format {
         match self {
-            Some(ref val) => val.encode_format(ty),
+            Some(val) => val.encode_format(ty),
             None => Format::Binary,
         }
     }
@@ -957,7 +955,7 @@ impl<T: ToSql> ToSql for Option<T> {
     to_sql_checked!();
 }
 
-impl<'a, T: ToSql> ToSql for &'a [T] {
+impl<T: ToSql> ToSql for &[T] {
     fn to_sql(&self, ty: &Type, w: &mut BytesMut) -> Result<IsNull, Box<dyn Error + Sync + Send>> {
         let member_type = match *ty.kind() {
             Kind::Array(ref member) => member,
@@ -998,7 +996,7 @@ impl<'a, T: ToSql> ToSql for &'a [T] {
     to_sql_checked!();
 }
 
-impl<'a> ToSql for &'a [u8] {
+impl ToSql for &[u8] {
     fn to_sql(&self, _: &Type, w: &mut BytesMut) -> Result<IsNull, Box<dyn Error + Sync + Send>> {
         types::bytea_to_sql(self, w);
         Ok(IsNull::No)
@@ -1082,7 +1080,7 @@ impl ToSql for Vec<u8> {
     to_sql_checked!();
 }
 
-impl<'a> ToSql for &'a str {
+impl ToSql for &str {
     fn to_sql(&self, ty: &Type, w: &mut BytesMut) -> Result<IsNull, Box<dyn Error + Sync + Send>> {
         match ty.name() {
             "ltree" => types::ltree_to_sql(self, w),

@@ -2,10 +2,10 @@ use crate::client::{InnerClient, Responses};
 use crate::codec::FrontendMessage;
 use crate::connection::RequestMessages;
 use crate::query::extract_row_affected;
-use crate::{query, simple_query, slice_iter, Error, Statement};
+use crate::{Error, Statement, query, simple_query, slice_iter};
 use bytes::{Buf, BufMut, Bytes, BytesMut};
 use futures_channel::mpsc;
-use futures_util::{future, ready, Sink, SinkExt, Stream, StreamExt};
+use futures_util::{Sink, SinkExt, Stream, StreamExt, future, ready};
 use log::debug;
 use pin_project_lite::pin_project;
 use postgres_protocol::message::backend::Message;
@@ -237,7 +237,7 @@ pub async fn copy_in_simple<T>(client: &InnerClient, query: &str) -> Result<Copy
 where
     T: Buf + 'static + Send,
 {
-    debug!("executing copy in query {}", query);
+    debug!("executing copy in query {query}");
 
     let buf = simple_query::encode(client, query)?;
     start(client, buf, true).await

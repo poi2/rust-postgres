@@ -6,8 +6,8 @@ use crate::types::{BorrowToSql, IsNull};
 use crate::{Column, Error, Portal, Row, Statement};
 use bytes::{Bytes, BytesMut};
 use fallible_iterator::FallibleIterator;
-use futures_util::{ready, Stream};
-use log::{debug, log_enabled, Level};
+use futures_util::{Stream, ready};
+use log::{Level, debug, log_enabled};
 use pin_project_lite::pin_project;
 use postgres_protocol::message::backend::{CommandCompleteBody, Message};
 use postgres_protocol::message::frontend;
@@ -61,7 +61,7 @@ where
     })
 }
 
-pub async fn query_typed<'a, P, I>(
+pub async fn query_typed<P, I>(
     client: &Arc<InnerClient>,
     query: &str,
     params: I,
@@ -302,7 +302,7 @@ impl Stream for RowStream {
         loop {
             match ready!(this.responses.poll_next(cx)?) {
                 Message::DataRow(body) => {
-                    return Poll::Ready(Some(Ok(Row::new(this.statement.clone(), body)?)))
+                    return Poll::Ready(Some(Ok(Row::new(this.statement.clone(), body)?)));
                 }
                 Message::CommandComplete(body) => {
                     *this.rows_affected = Some(extract_row_affected(&body)?);

@@ -7,7 +7,7 @@ use crate::{AsyncMessage, Error, Notification};
 use bytes::BytesMut;
 use fallible_iterator::FallibleIterator;
 use futures_channel::mpsc;
-use futures_util::{ready, stream::FusedStream, Sink, Stream, StreamExt};
+use futures_util::{Sink, Stream, StreamExt, ready, stream::FusedStream};
 use log::{info, trace};
 use postgres_protocol::message::backend::Message;
 use postgres_protocol::message::frontend;

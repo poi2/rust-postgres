@@ -1,4 +1,4 @@
-//! TLS support.
+// TLS support.
 
 use std::error::Error;
 use std::future::Future;

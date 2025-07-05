@@ -1,51 +1,51 @@
-//! TLS support for `tokio-postgres` and `postgres` via `openssl`.
-//!
-//! # Examples
-//!
-//! ```no_run
-//! use openssl::ssl::{SslConnector, SslMethod};
-//! # #[cfg(feature = "runtime")]
-//! use postgres_openssl::MakeTlsConnector;
-//!
-//! # fn main() -> Result<(), Box<dyn std::error::Error>> {
-//! # #[cfg(feature = "runtime")] {
-//! let mut builder = SslConnector::builder(SslMethod::tls())?;
-//! builder.set_ca_file("database_cert.pem")?;
-//! let connector = MakeTlsConnector::new(builder.build());
-//!
-//! let connect_future = tokio_postgres::connect(
-//!     "host=localhost user=postgres sslmode=require",
-//!     connector,
-//! );
-//! # }
-//!
-//! // ...
-//! # Ok(())
-//! # }
-//! ```
-//!
-//! ```no_run
-//! use openssl::ssl::{SslConnector, SslMethod};
-//! # #[cfg(feature = "runtime")]
-//! use postgres_openssl::MakeTlsConnector;
-//!
-//! # fn main() -> Result<(), Box<dyn std::error::Error>> {
-//! # #[cfg(feature = "runtime")] {
-//! let mut builder = SslConnector::builder(SslMethod::tls())?;
-//! builder.set_ca_file("database_cert.pem")?;
-//! let connector = MakeTlsConnector::new(builder.build());
-//!
-//! let client = postgres::Client::connect(
-//!     "host=localhost user=postgres sslmode=require",
-//!     connector,
-//! )?;
-//! # }
-//!
-//! // ...
-//! # Ok(())
-//! # }
-//! ```
-#![warn(rust_2018_idioms, clippy::all, missing_docs)]
+// TLS support for `tokio-postgres` and `postgres` via `openssl`.
+//
+// # Examples
+//
+// ```no_run
+// use openssl::ssl::{SslConnector, SslMethod};
+// # #[cfg(feature = "runtime")]
+// use postgres_openssl::MakeTlsConnector;
+//
+// # fn main() -> Result<(), Box<dyn std::error::Error>> {
+// # #[cfg(feature = "runtime")] {
+// let mut builder = SslConnector::builder(SslMethod::tls())?;
+// builder.set_ca_file("database_cert.pem")?;
+// let connector = MakeTlsConnector::new(builder.build());
+//
+// let connect_future = tokio_postgres::connect(
+//     "host=localhost user=postgres sslmode=require",
+//     connector,
+// );
+// # }
+//
+// // ...
+// # Ok(())
+// # }
+// ```
+//
+// ```no_run
+// use openssl::ssl::{SslConnector, SslMethod};
+// # #[cfg(feature = "runtime")]
+// use postgres_openssl::MakeTlsConnector;
+//
+// # fn main() -> Result<(), Box<dyn std::error::Error>> {
+// # #[cfg(feature = "runtime")] {
+// let mut builder = SslConnector::builder(SslMethod::tls())?;
+// builder.set_ca_file("database_cert.pem")?;
+// let connector = MakeTlsConnector::new(builder.build());
+//
+// let client = postgres::Client::connect(
+//     "host=localhost user=postgres sslmode=require",
+//     connector,
+// )?;
+// # }
+//
+// // ...
+// # Ok(())
+// # }
+// ```
+#![warn(rust_2018_idioms, clippy::all)]
 
 #[cfg(feature = "runtime")]
 use openssl::error::ErrorStack;

@@ -102,8 +102,8 @@ impl Client {
     ///
     /// let baz = true;
     /// for row in client.query("SELECT foo FROM bar WHERE baz = $1", &[&baz])? {
-    ///     let foo: i32 = row.get("foo");
-    ///     println!("foo: {}", foo);
+    ///   let foo: i32 = row.get("foo");
+    ///   println!("foo: {}", foo);
     /// }
     /// # Ok(())
     /// # }
@@ -211,8 +211,8 @@ impl Client {
     /// let mut it = client.query_raw("SELECT foo FROM bar WHERE baz = $1", iter::once(baz))?;
     ///
     /// while let Some(row) = it.next()? {
-    ///     let foo: i32 = row.get("foo");
-    ///     println!("foo: {}", foo);
+    ///   let foo: i32 = row.get("foo");
+    ///   println!("foo: {}", foo);
     /// }
     /// # Ok(())
     /// # }
@@ -229,8 +229,8 @@ impl Client {
     /// # let mut client = Client::connect("host=localhost user=postgres", NoTls)?;
     ///
     /// let params: Vec<String> = vec![
-    ///     "first param".into(),
-    ///     "second param".into(),
+    ///     "first param".to_string(),
+    ///     "second param".to_string(),
     /// ];
     /// let mut it = client.query_raw(
     ///     "SELECT foo FROM bar WHERE biz = $1 AND baz = $2",
@@ -238,8 +238,8 @@ impl Client {
     /// )?;
     ///
     /// while let Some(row) = it.next()? {
-    ///     let foo: i32 = row.get("foo");
-    ///     println!("foo: {}", foo);
+    ///   let foo: i32 = row.get("foo");
+    ///   println!("foo: {}", foo);
     /// }
     /// # Ok(())
     /// # }
@@ -296,8 +296,8 @@ impl Client {
     /// # let mut client = Client::connect("host=localhost user=postgres", NoTls)?;
     ///
     /// let params: Vec<(String, Type)> = vec![
-    ///     ("first param".into(), Type::TEXT),
-    ///     ("second param".into(), Type::TEXT),
+    ///     ("first param".to_string(), Type::TEXT),
+    ///     ("second param".to_string(), Type::TEXT),
     /// ];
     /// let mut it = client.query_typed_raw(
     ///     "SELECT foo FROM bar WHERE biz = $1 AND baz = $2",
@@ -305,8 +305,8 @@ impl Client {
     /// )?;
     ///
     /// while let Some(row) = it.next()? {
-    ///     let foo: i32 = row.get("foo");
-    ///     println!("foo: {}", foo);
+    ///   let foo: i32 = row.get("foo");
+    ///   println!("foo: {}", foo);
     /// }
     /// # Ok(())
     /// # }
@@ -338,9 +338,9 @@ impl Client {
     /// let statement = client.prepare("SELECT name FROM people WHERE id = $1")?;
     ///
     /// for id in 0..10 {
-    ///     let rows = client.query(&statement, &[&id])?;
-    ///     let name: &str = rows[0].get(0);
-    ///     println!("name: {}", name);
+    ///   let rows = client.query(&statement, &[&id])?;
+    ///   let name: &str = rows[0].get(0);
+    ///   println!("name: {}", name);
     /// }
     /// # Ok(())
     /// # }
@@ -369,9 +369,9 @@ impl Client {
     /// )?;
     ///
     /// for id in 0..10 {
-    ///     let rows = client.query(&statement, &[&id])?;
-    ///     let name: &str = rows[0].get(0);
-    ///     println!("name: {}", name);
+    ///   let rows = client.query(&statement, &[&id])?;
+    ///   let name: &str = rows[0].get(0);
+    ///   println!("name: {}", name);
     /// }
     /// # Ok(())
     /// # }
@@ -563,19 +563,19 @@ impl Client {
     /// let cancel_token = client.cancel_token();
     ///
     /// thread::spawn(move || {
-    ///     // Abort the query after 5s.
-    ///     thread::sleep(Duration::from_secs(5));
-    ///     let _ = cancel_token.cancel_query(NoTls);
+    ///   // Abort the query after 5s.
+    ///   thread::sleep(Duration::from_secs(5));
+    ///   let _ = cancel_token.cancel_query(NoTls);
     /// });
     ///
     /// match client.simple_query("SELECT long_running_query()") {
-    ///     Err(e) if e.code() == Some(&SqlState::QUERY_CANCELED) => {
-    ///         // Handle canceled query.
-    ///     }
-    ///     Err(err) => return Err(err.into()),
-    ///     Ok(rows) => {
-    ///         // ...
-    ///     }
+    ///   Err(e) if e.code() == Some(&SqlState::QUERY_CANCELED) => {
+    ///     // Handle canceled query.
+    ///   }
+    ///   Err(err) => return Err(err.into()),
+    ///   Ok(rows) => {
+    ///     // ...
+    ///   }
     /// }
     /// // ...
     ///

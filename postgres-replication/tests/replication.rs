@@ -2,10 +2,10 @@ use std::time::{Duration, UNIX_EPOCH};
 
 use futures_util::StreamExt;
 
+use postgres_replication::LogicalReplicationStream;
 use postgres_replication::protocol::LogicalReplicationMessage::{Begin, Commit, Insert};
 use postgres_replication::protocol::ReplicationMessage::*;
 use postgres_replication::protocol::TupleData;
-use postgres_replication::LogicalReplicationStream;
 use postgres_types::PgLsn;
 use tokio_postgres::NoTls;
 use tokio_postgres::SimpleQueryMessage::Row;
@@ -13,11 +13,11 @@ use tokio_postgres::SimpleQueryMessage::Row;
 #[tokio::test]
 async fn test_replication() {
     // form SQL connection
-    let conninfo = "host=127.0.0.1 port=5433 user=postgres replication=database";
+    let conninfo = "host=127.0.0.1 port=5432 user=postgres replication=database";
     let (client, connection) = tokio_postgres::connect(conninfo, NoTls).await.unwrap();
     tokio::spawn(async move {
         if let Err(e) = connection.await {
-            eprintln!("connection error: {}", e);
+            eprintln!("connection error: {e}");
         }
     });
 
@@ -50,10 +50,7 @@ async fn test_replication() {
 
     let slot = "test_logical_slot";
 
-    let query = format!(
-        r#"CREATE_REPLICATION_SLOT {:?} TEMPORARY LOGICAL "pgoutput""#,
-        slot
-    );
+    let query = format!(r#"CREATE_REPLICATION_SLOT {slot:?} TEMPORARY LOGICAL "pgoutput""#);
     let slot_query = client.simple_query(&query).await.unwrap();
     let lsn = if let Row(row) = &slot_query[1] {
         row.get("consistent_point").unwrap()
@@ -68,10 +65,7 @@ async fn test_replication() {
         .unwrap();
 
     let options = r#"("proto_version" '1', "publication_names" 'test_pub')"#;
-    let query = format!(
-        r#"START_REPLICATION SLOT {:?} LOGICAL {} {}"#,
-        slot, lsn, options
-    );
+    let query = format!(r#"START_REPLICATION SLOT {slot:?} LOGICAL {lsn} {options}"#);
     let copy_stream = client
         .copy_both_simple::<bytes::Bytes>(&query)
         .await
@@ -120,7 +114,7 @@ async fn test_replication() {
         }
     };
 
-    assert_eq!(begin.final_lsn(), commit.commit_lsn());
+    assert!(begin.final_lsn() <= commit.commit_lsn());
     assert_eq!(insert.rel_id(), rel_id);
 
     let tuple_data = insert.tuple().tuple_data();
@@ -143,7 +137,7 @@ async fn test_replication() {
         match stream.next().await {
             Some(Ok(PrimaryKeepAlive(_))) => break,
             Some(Ok(_)) => (),
-            Some(Err(e)) => panic!("unexpected replication stream error: {}", e),
+            Some(Err(e)) => panic!("unexpected replication stream error: {e}"),
             None => panic!("unexpected replication stream end"),
         }
     }

@@ -1,3 +1,5 @@
+#[cfg(feature = "runtime")]
+use crate::Socket;
 use crate::codec::{BackendMessages, FrontendMessage};
 use crate::config::SslMode;
 use crate::connection::{Request, RequestMessages};
@@ -11,17 +13,14 @@ use crate::simple_query::SimpleQueryStream;
 use crate::tls::MakeTlsConnect;
 use crate::tls::TlsConnect;
 use crate::types::{Oid, ToSql, Type};
-#[cfg(feature = "runtime")]
-use crate::Socket;
 use crate::{
-    copy_both, copy_in, copy_out, prepare, query, simple_query, slice_iter, CancelToken,
-    CopyInSink, Error, Row, SimpleQueryMessage, Statement, ToStatement, Transaction,
-    TransactionBuilder,
+    CancelToken, CopyInSink, Error, Row, SimpleQueryMessage, Statement, ToStatement, Transaction,
+    TransactionBuilder, copy_both, copy_in, copy_out, prepare, query, simple_query, slice_iter,
 };
 use bytes::{Buf, BytesMut};
 use fallible_iterator::FallibleIterator;
 use futures_channel::mpsc;
-use futures_util::{future, pin_mut, ready, Stream, StreamExt, TryStreamExt};
+use futures_util::{Stream, StreamExt, TryStreamExt, future, pin_mut, ready};
 use parking_lot::Mutex;
 use postgres_protocol::message::backend::Message;
 use postgres_types::BorrowToSql;
@@ -381,8 +380,8 @@ impl Client {
     /// use futures_util::{pin_mut, TryStreamExt};
     ///
     /// let params: Vec<String> = vec![
-    ///     "first param".into(),
-    ///     "second param".into(),
+    ///     "first param".to_string(),
+    ///     "second param".to_string(),
     /// ];
     /// let mut it = client.query_raw(
     ///     "SELECT foo FROM bar WHERE biz = $1 AND baz = $2",
@@ -391,8 +390,8 @@ impl Client {
     ///
     /// pin_mut!(it);
     /// while let Some(row) = it.try_next().await? {
-    ///     let foo: i32 = row.get("foo");
-    ///     println!("foo: {}", foo);
+    ///   let foo: i32 = row.get("foo");
+    ///   println!("foo: {}", foo);
     /// }
     /// # Ok(())
     /// # }
@@ -448,8 +447,8 @@ impl Client {
     /// use tokio_postgres::types::Type;
     ///
     /// let params: Vec<(String, Type)> = vec![
-    ///     ("first param".into(), Type::TEXT),
-    ///     ("second param".into(), Type::TEXT),
+    ///     ("first param".to_string(), Type::TEXT),
+    ///     ("second param".to_string(), Type::TEXT),
     /// ];
     /// let mut it = client.query_typed_raw(
     ///     "SELECT foo FROM bar WHERE biz = $1 AND baz = $2",
@@ -458,8 +457,8 @@ impl Client {
     ///
     /// pin_mut!(it);
     /// while let Some(row) = it.try_next().await? {
-    ///     let foo: i32 = row.get("foo");
-    ///     println!("foo: {}", foo);
+    ///   let foo: i32 = row.get("foo");
+    ///   println!("foo: {}", foo);
     /// }
     /// # Ok(())
     /// # }

@@ -1,5 +1,5 @@
-use crate::to_statement::private::{Sealed, ToStatementType};
 use crate::Statement;
+use crate::to_statement::private::{Sealed, ToStatementType};
 
 mod private {
     use crate::{Client, Error, Statement};

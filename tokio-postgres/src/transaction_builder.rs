@@ -1,6 +1,6 @@
 use postgres_protocol::message::frontend;
 
-use crate::{codec::FrontendMessage, connection::RequestMessages, Client, Error, Transaction};
+use crate::{Client, Error, Transaction, codec::FrontendMessage, connection::RequestMessages};
 
 /// The isolation level of a database transaction.
 #[derive(Debug, Copy, Clone)]

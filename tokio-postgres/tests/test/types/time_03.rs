@@ -1,4 +1,4 @@
-use time_03::{format_description, OffsetDateTime, PrimitiveDateTime};
+use time_03::{OffsetDateTime, PrimitiveDateTime, format_description};
 use tokio_postgres::types::{Date, Timestamp};
 
 use crate::types::test_type;

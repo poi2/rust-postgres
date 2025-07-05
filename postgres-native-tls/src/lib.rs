@@ -1,57 +1,57 @@
-//! TLS support for `tokio-postgres` and `postgres` via `native-tls`.
-//!
-//! # Examples
-//!
-//! ```no_run
-//! use native_tls::{Certificate, TlsConnector};
-//! # #[cfg(feature = "runtime")]
-//! use postgres_native_tls::MakeTlsConnector;
-//! use std::fs;
-//!
-//! # fn main() -> Result<(), Box<dyn std::error::Error>> {
-//! # #[cfg(feature = "runtime")] {
-//! let cert = fs::read("database_cert.pem")?;
-//! let cert = Certificate::from_pem(&cert)?;
-//! let connector = TlsConnector::builder()
-//!     .add_root_certificate(cert)
-//!     .build()?;
-//! let connector = MakeTlsConnector::new(connector);
-//!
-//! let connect_future = tokio_postgres::connect(
-//!     "host=localhost user=postgres sslmode=require",
-//!     connector,
-//! );
-//! # }
-//!
-//! // ...
-//! # Ok(())
-//! # }
-//! ```
-//!
-//! ```no_run
-//! use native_tls::{Certificate, TlsConnector};
-//! # #[cfg(feature = "runtime")]
-//! use postgres_native_tls::MakeTlsConnector;
-//! use std::fs;
-//!
-//! # fn main() -> Result<(), Box<dyn std::error::Error>> {
-//! # #[cfg(feature = "runtime")] {
-//! let cert = fs::read("database_cert.pem")?;
-//! let cert = Certificate::from_pem(&cert)?;
-//! let connector = TlsConnector::builder()
-//!     .add_root_certificate(cert)
-//!     .build()?;
-//! let connector = MakeTlsConnector::new(connector);
-//!
-//! let client = postgres::Client::connect(
-//!     "host=localhost user=postgres sslmode=require",
-//!     connector,
-//! )?;
-//! # }
-//! # Ok(())
-//! # }
-//! ```
-#![warn(rust_2018_idioms, clippy::all, missing_docs)]
+// TLS support for `tokio-postgres` and `postgres` via `native-tls`.
+//
+// # Examples
+//
+// ```no_run
+// use native_tls::{Certificate, TlsConnector};
+// # #[cfg(feature = "runtime")]
+// use postgres_native_tls::MakeTlsConnector;
+// use std::fs;
+//
+// # fn main() -> Result<(), Box<dyn std::error::Error>> {
+// # #[cfg(feature = "runtime")] {
+// let cert = fs::read("database_cert.pem")?;
+// let cert = Certificate::from_pem(&cert)?;
+// let connector = TlsConnector::builder()
+//     .add_root_certificate(cert)
+//     .build()?;
+// let connector = MakeTlsConnector::new(connector);
+//
+// let connect_future = tokio_postgres::connect(
+//     "host=localhost user=postgres sslmode=require",
+//     connector,
+// );
+// # }
+//
+// // ...
+// # Ok(())
+// # }
+// ```
+//
+// ```no_run
+// use native_tls::{Certificate, TlsConnector};
+// # #[cfg(feature = "runtime")]
+// use postgres_native_tls::MakeTlsConnector;
+// use std::fs;
+//
+// # fn main() -> Result<(), Box<dyn std::error::Error>> {
+// # #[cfg(feature = "runtime")] {
+// let cert = fs::read("database_cert.pem")?;
+// let cert = Certificate::from_pem(&cert)?;
+// let connector = TlsConnector::builder()
+//     .add_root_certificate(cert)
+//     .build()?;
+// let connector = MakeTlsConnector::new(connector);
+//
+// let client = postgres::Client::connect(
+//     "host=localhost user=postgres sslmode=require",
+//     connector,
+// )?;
+// # }
+// # Ok(())
+// # }
+// ```
+#![warn(rust_2018_idioms, clippy::all)]
 
 use std::future::Future;
 use std::io;

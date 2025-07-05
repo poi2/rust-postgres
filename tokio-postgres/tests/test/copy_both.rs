@@ -1,5 +1,5 @@
-use futures_util::{future, StreamExt, TryStreamExt};
-use tokio_postgres::{error::SqlState, Client, SimpleQueryMessage, SimpleQueryRow};
+use futures_util::{StreamExt, TryStreamExt, future};
+use tokio_postgres::{Client, SimpleQueryMessage, SimpleQueryRow, error::SqlState};
 
 use crate::Cancellable;
 
@@ -95,7 +95,7 @@ async fn copy_both() {
     // Insert a second row to generate unprocessed messages in the stream
     q(&client, "INSERT INTO replication VALUES ('ignored')").await;
 
-    let query = format!("START_REPLICATION SLOT slot LOGICAL {}", lsn);
+    let query = format!("START_REPLICATION SLOT slot LOGICAL {lsn}");
     let duplex_stream = client
         .copy_both_simple::<bytes::Bytes>(&query)
         .await
@@ -137,7 +137,7 @@ async fn copy_both_future_cancellation() {
         .unwrap()
         .to_owned();
 
-    let query = format!("START_REPLICATION SLOT future_cancellation LOGICAL {}", lsn);
+    let query = format!("START_REPLICATION SLOT future_cancellation LOGICAL {lsn}");
     for i in 0.. {
         let done = {
             let duplex_stream = client.copy_both_simple::<bytes::Bytes>(&query);

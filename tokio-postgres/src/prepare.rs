@@ -3,18 +3,18 @@ use crate::codec::FrontendMessage;
 use crate::connection::RequestMessages;
 use crate::error::SqlState;
 use crate::types::{Field, Kind, Oid, Type};
-use crate::{query, slice_iter};
 use crate::{Column, Error, Statement};
+use crate::{query, slice_iter};
 use bytes::Bytes;
 use fallible_iterator::FallibleIterator;
-use futures_util::{pin_mut, TryStreamExt};
+use futures_util::{TryStreamExt, pin_mut};
 use log::debug;
 use postgres_protocol::message::backend::Message;
 use postgres_protocol::message::frontend;
 use std::future::Future;
 use std::pin::Pin;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 const TYPEINFO_QUERY: &str = "\
 SELECT t.typname, t.typtype, t.typelem, r.rngsubtype, t.typbasetype, n.nspname, t.typrelid
@@ -118,9 +118,9 @@ fn prepare_rec<'a>(
 
 fn encode(client: &InnerClient, name: &str, query: &str, types: &[Type]) -> Result<Bytes, Error> {
     if types.is_empty() {
-        debug!("preparing query {}: {}", name, query);
+        debug!("preparing query {name}: {query}");
     } else {
-        debug!("preparing query {} with types {:?}: {}", name, types, query);
+        debug!("preparing query {name} with types {types:?}: {query}");
     }
 
     client.with_buf(|buf| {

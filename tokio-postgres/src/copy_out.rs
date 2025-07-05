@@ -1,9 +1,9 @@
 use crate::client::{InnerClient, Responses};
 use crate::codec::FrontendMessage;
 use crate::connection::RequestMessages;
-use crate::{query, simple_query, slice_iter, Error, Statement};
+use crate::{Error, Statement, query, simple_query, slice_iter};
 use bytes::Bytes;
-use futures_util::{ready, Stream};
+use futures_util::{Stream, ready};
 use log::debug;
 use pin_project_lite::pin_project;
 use postgres_protocol::message::backend::Message;
@@ -12,7 +12,7 @@ use std::pin::Pin;
 use std::task::{Context, Poll};
 
 pub async fn copy_out_simple(client: &InnerClient, query: &str) -> Result<CopyOutStream, Error> {
-    debug!("executing copy out query {}", query);
+    debug!("executing copy out query {query}");
 
     let buf = simple_query::encode(client, query)?;
     let responses = start(client, buf, true).await?;

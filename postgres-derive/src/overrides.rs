@@ -1,7 +1,7 @@
 use syn::punctuated::Punctuated;
 use syn::{Attribute, Error, Expr, ExprLit, Lit, Meta, Token};
 
-use crate::case::{RenameRule, RENAME_RULES};
+use crate::case::{RENAME_RULES, RenameRule};
 
 pub struct Overrides {
     pub name: Option<String>,
@@ -25,7 +25,7 @@ impl Overrides {
             }
 
             let list = match &attr.meta {
-                Meta::List(ref list) => list,
+                Meta::List(list) => list,
                 bad => return Err(Error::new_spanned(bad, "expected a #[postgres(...)]")),
             };
 
@@ -51,7 +51,7 @@ impl Overrides {
                                 lit: Lit::Str(lit), ..
                             }) => lit.value(),
                             bad => {
-                                return Err(Error::new_spanned(bad, "expected a string literal"))
+                                return Err(Error::new_spanned(bad, "expected a string literal"));
                             }
                         };
 
@@ -65,7 +65,7 @@ impl Overrides {
                                         "invalid rename_all rule, expected one of: {}",
                                         RENAME_RULES
                                             .iter()
-                                            .map(|rule| format!("\"{}\"", rule))
+                                            .map(|rule| format!("\"{rule}\""))
                                             .collect::<Vec<_>>()
                                             .join(", ")
                                     ),

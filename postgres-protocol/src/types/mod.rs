@@ -1,4 +1,4 @@
-//! Conversions to and from Postgres's binary format for various types.
+// Conversions to and from Postgres's binary format for various types.
 use byteorder::{BigEndian, ByteOrder, ReadBytesExt};
 use bytes::{BufMut, BytesMut};
 use fallible_iterator::FallibleIterator;
@@ -8,7 +8,7 @@ use std::io::Read;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 use std::str;
 
-use crate::{write_nullable, FromUsize, IsNull, Lsn, Oid};
+use crate::{FromUsize, IsNull, Lsn, Oid, write_nullable};
 
 #[cfg(test)]
 mod test;
@@ -324,7 +324,7 @@ pub fn varbit_from_sql(mut buf: &[u8]) -> Result<Varbit<'_>, StdBox<dyn Error + 
     if len < 0 {
         return Err("invalid varbit length: varbit < 0".into());
     }
-    let bytes = (len as usize + 7) / 8;
+    let bytes = (len as usize).div_ceil(8);
     if buf.len() != bytes {
         return Err("invalid message length: varbit mismatch".into());
     }

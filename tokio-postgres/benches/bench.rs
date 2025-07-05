@@ -1,4 +1,4 @@
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, criterion_group, criterion_main};
 use futures_channel::oneshot;
 use std::sync::Arc;
 use std::time::Instant;
@@ -9,7 +9,7 @@ fn setup() -> (Client, Runtime) {
     let runtime = Runtime::new().unwrap();
     let (client, conn) = runtime
         .block_on(tokio_postgres::connect(
-            "host=localhost port=5433 user=postgres",
+            "host=localhost port=5432 user=postgres",
             NoTls,
         ))
         .unwrap();

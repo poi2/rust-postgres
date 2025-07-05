@@ -3,7 +3,7 @@
 use bytes::{Bytes, BytesMut};
 use futures_channel::mpsc;
 use futures_util::{
-    future, join, pin_mut, stream, try_join, Future, FutureExt, SinkExt, StreamExt, TryStreamExt,
+    Future, FutureExt, SinkExt, StreamExt, TryStreamExt, future, join, pin_mut, stream, try_join,
 };
 use pin_project_lite::pin_project;
 use std::fmt::Write;
@@ -56,7 +56,7 @@ impl<F: Future> Future for Cancellable<F> {
 }
 
 async fn connect_raw(s: &str) -> Result<(Client, Connection<TcpStream, NoTlsStream>), Error> {
-    let socket = TcpStream::connect("127.0.0.1:5433").await.unwrap();
+    let socket = TcpStream::connect("127.0.0.1:5432").await.unwrap();
     let config = s.parse::<Config>().unwrap();
     config.connect_raw(socket, NoTls).await
 }
@@ -364,7 +364,7 @@ async fn simple_query() {
 async fn cancel_query_raw() {
     let client = connect("user=postgres").await;
 
-    let socket = TcpStream::connect("127.0.0.1:5433").await.unwrap();
+    let socket = TcpStream::connect("127.0.0.1:5432").await.unwrap();
     let cancel_token = client.cancel_token();
     let cancel = cancel_token.cancel_query_raw(socket, NoTls);
     let cancel = time::sleep(Duration::from_millis(100)).then(|()| cancel);
@@ -373,7 +373,7 @@ async fn cancel_query_raw() {
 
     match join!(sleep, cancel) {
         (Err(ref e), Ok(())) if e.code() == Some(&SqlState::QUERY_CANCELED) => {}
-        t => panic!("unexpected return: {:?}", t),
+        t => panic!("unexpected return: {t:?}"),
     }
 }
 
@@ -625,11 +625,11 @@ async fn copy_in_large() {
     let a = Bytes::from_static(b"0\tname0\n");
     let mut b = BytesMut::new();
     for i in 1..5_000 {
-        writeln!(b, "{0}\tname{0}", i).unwrap();
+        writeln!(b, "{i}\tname{i}").unwrap();
     }
     let mut c = BytesMut::new();
     for i in 5_000..10_000 {
-        writeln!(c, "{0}\tname{0}", i).unwrap();
+        writeln!(c, "{i}\tname{i}").unwrap();
     }
     let mut stream = stream::iter(
         vec![a, b.freeze(), c.freeze()]
@@ -705,7 +705,7 @@ async fn copy_out() {
 async fn notices() {
     let long_name = "x".repeat(65);
     let (client, mut connection) =
-        connect_raw(&format!("user=postgres application_name={}", long_name,))
+        connect_raw(&format!("user=postgres application_name={long_name}",))
             .await
             .unwrap();
 
@@ -918,11 +918,13 @@ async fn query_opt() {
         .await
         .unwrap();
 
-    assert!(client
-        .query_opt("SELECT * FROM foo WHERE name = 'dave'", &[])
-        .await
-        .unwrap()
-        .is_none());
+    assert!(
+        client
+            .query_opt("SELECT * FROM foo WHERE name = 'dave'", &[])
+            .await
+            .unwrap()
+            .is_none()
+    );
     client
         .query_opt("SELECT * FROM foo WHERE name = 'alice'", &[])
         .await

@@ -120,8 +120,8 @@ impl<'a> DatParser<'a> {
 
         match self.it.next() {
             Some((_, ch)) if ch == target => {}
-            Some((_, ch)) => panic!("expected {} but got {}", target, ch),
-            None => panic!("expected {} but got eof", target),
+            Some((_, ch)) => panic!("expected {target} but got {ch}"),
+            None => panic!("expected {target} but got eof"),
         }
     }
 
@@ -143,7 +143,7 @@ impl<'a> DatParser<'a> {
     fn eof(&mut self) {
         self.skip_ws();
         if let Some((_, ch)) = self.it.next() {
-            panic!("expected eof but got {}", ch);
+            panic!("expected eof but got {ch}");
         }
     }
 
@@ -228,7 +228,7 @@ fn parse_types() -> BTreeMap<u32, Type> {
             {
                 "r" => range_elements[&oid],
                 "m" => multi_range_elements[&oid],
-                typtype => panic!("invalid range typtype {}", typtype),
+                typtype => panic!("invalid range typtype {typtype}"),
             },
             "A" => oids_by_name[&raw_type["typelem"]],
             _ => 0,
@@ -237,7 +237,7 @@ fn parse_types() -> BTreeMap<u32, Type> {
         let doc_name = array_re.replace(&name, "$1[]").to_ascii_uppercase();
         let mut doc = doc_name.clone();
         if let Some(descr) = raw_type.get("descr") {
-            write!(doc, " - {}", descr).unwrap();
+            write!(doc, " - {descr}").unwrap();
         }
         let doc = Escape::new(doc.as_bytes().iter().cloned()).collect();
         let doc = String::from_utf8(doc).unwrap();
@@ -245,10 +245,10 @@ fn parse_types() -> BTreeMap<u32, Type> {
         if let Some(array_type_oid) = raw_type.get("array_type_oid") {
             let array_type_oid = array_type_oid.parse::<u32>().unwrap();
 
-            let name = format!("_{}", name);
-            let variant = format!("{}Array", variant);
-            let doc = format!("{}&#91;&#93;", doc_name);
-            let ident = format!("{}_ARRAY", ident);
+            let name = format!("_{name}");
+            let variant = format!("{variant}Array");
+            let doc = format!("{doc_name}&#91;&#93;");
+            let ident = format!("{ident}_ARRAY");
 
             let type_ = Type {
                 name,
@@ -379,7 +379,7 @@ fn make_impl(w: &mut BufWriter<File>, types: &BTreeMap<u32, Type>) {
             {
                 "r" => format!("Range(Type(Inner::{}))", types[&type_.element].variant),
                 "m" => format!("Multirange(Type(Inner::{}))", types[&type_.element].variant),
-                typtype => panic!("invalid range typtype {}", typtype),
+                typtype => panic!("invalid range typtype {typtype}"),
             },
             _ => "Simple".to_owned(),
         };
