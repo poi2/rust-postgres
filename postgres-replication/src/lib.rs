@@ -4,7 +4,7 @@ use std::pin::Pin;
 use std::task::{Context, Poll};
 
 use bytes::{BufMut, Bytes, BytesMut};
-use futures_util::{ready, SinkExt, Stream};
+use futures_util::{SinkExt, Stream, ready};
 use pin_project_lite::pin_project;
 use postgres_types::PgLsn;
 use tokio_postgres::CopyBothDuplex;

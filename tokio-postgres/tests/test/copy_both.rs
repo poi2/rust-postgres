@@ -1,5 +1,5 @@
-use futures_util::{future, StreamExt, TryStreamExt};
-use tokio_postgres::{error::SqlState, Client, SimpleQueryMessage, SimpleQueryRow};
+use futures_util::{StreamExt, TryStreamExt, future};
+use tokio_postgres::{Client, SimpleQueryMessage, SimpleQueryRow, error::SqlState};
 
 use crate::Cancellable;
 

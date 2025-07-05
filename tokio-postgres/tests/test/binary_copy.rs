@@ -1,5 +1,5 @@
 use crate::connect;
-use futures_util::{pin_mut, TryStreamExt};
+use futures_util::{TryStreamExt, pin_mut};
 use tokio_postgres::binary_copy::{BinaryCopyInWriter, BinaryCopyOutStream};
 use tokio_postgres::types::Type;
 

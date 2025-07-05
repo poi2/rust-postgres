@@ -2,10 +2,10 @@ use std::time::{Duration, UNIX_EPOCH};
 
 use futures_util::StreamExt;
 
+use postgres_replication::LogicalReplicationStream;
 use postgres_replication::protocol::LogicalReplicationMessage::{Begin, Commit, Insert};
 use postgres_replication::protocol::ReplicationMessage::*;
 use postgres_replication::protocol::TupleData;
-use postgres_replication::LogicalReplicationStream;
 use postgres_types::PgLsn;
 use tokio_postgres::NoTls;
 use tokio_postgres::SimpleQueryMessage::Row;

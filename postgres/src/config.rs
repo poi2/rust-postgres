@@ -1,7 +1,7 @@
 //! Connection configuration.
 
-use crate::connection::Connection;
 use crate::Client;
+use crate::connection::Connection;
 use log::info;
 use std::fmt;
 use std::net::IpAddr;

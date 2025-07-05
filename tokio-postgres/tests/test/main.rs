@@ -3,7 +3,7 @@
 use bytes::{Bytes, BytesMut};
 use futures_channel::mpsc;
 use futures_util::{
-    future, join, pin_mut, stream, try_join, Future, FutureExt, SinkExt, StreamExt, TryStreamExt,
+    Future, FutureExt, SinkExt, StreamExt, TryStreamExt, future, join, pin_mut, stream, try_join,
 };
 use pin_project_lite::pin_project;
 use std::fmt::Write;
@@ -918,11 +918,13 @@ async fn query_opt() {
         .await
         .unwrap();
 
-    assert!(client
-        .query_opt("SELECT * FROM foo WHERE name = 'dave'", &[])
-        .await
-        .unwrap()
-        .is_none());
+    assert!(
+        client
+            .query_opt("SELECT * FROM foo WHERE name = 'dave'", &[])
+            .await
+            .unwrap()
+            .is_none()
+    );
     client
         .query_opt("SELECT * FROM foo WHERE name = 'alice'", &[])
         .await

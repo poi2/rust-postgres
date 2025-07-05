@@ -1,7 +1,7 @@
 use syn::punctuated::Punctuated;
 use syn::{Attribute, Error, Expr, ExprLit, Lit, Meta, Token};
 
-use crate::case::{RenameRule, RENAME_RULES};
+use crate::case::{RENAME_RULES, RenameRule};
 
 pub struct Overrides {
     pub name: Option<String>,
@@ -51,7 +51,7 @@ impl Overrides {
                                 lit: Lit::Str(lit), ..
                             }) => lit.value(),
                             bad => {
-                                return Err(Error::new_spanned(bad, "expected a string literal"))
+                                return Err(Error::new_spanned(bad, "expected a string literal"));
                             }
                         };
 

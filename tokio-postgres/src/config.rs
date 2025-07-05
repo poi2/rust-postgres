@@ -1,6 +1,8 @@
 //! Connection configuration.
 
 #[cfg(feature = "runtime")]
+use crate::Socket;
+#[cfg(feature = "runtime")]
 use crate::connect::connect;
 use crate::connect_raw::connect_raw;
 #[cfg(not(target_arch = "wasm32"))]
@@ -8,8 +10,6 @@ use crate::keepalive::KeepaliveConfig;
 #[cfg(feature = "runtime")]
 use crate::tls::MakeTlsConnect;
 use crate::tls::TlsConnect;
-#[cfg(feature = "runtime")]
-use crate::Socket;
 use crate::{Client, Connection, Error};
 use std::borrow::Cow;
 #[cfg(unix)]
@@ -770,7 +770,7 @@ impl Config {
                     _ => {
                         return Err(Error::config_parse(Box::new(InvalidValue(
                             "channel_binding",
-                        ))))
+                        ))));
                     }
                 };
                 self.channel_binding(channel_binding);
@@ -782,7 +782,7 @@ impl Config {
                     _ => {
                         return Err(Error::config_parse(Box::new(InvalidValue(
                             "load_balance_hosts",
-                        ))))
+                        ))));
                     }
                 };
                 self.load_balance_hosts(load_balance_hosts);
@@ -986,11 +986,7 @@ impl<'a> Parser<'a> {
             _ => true,
         });
 
-        if s.is_empty() {
-            None
-        } else {
-            Some(s)
-        }
+        if s.is_empty() { None } else { Some(s) }
     }
 
     fn value(&mut self) -> Result<String, Error> {
@@ -1263,7 +1259,7 @@ impl<'a> UrlParser<'a> {
 mod tests {
     use std::net::IpAddr;
 
-    use crate::{config::Host, Config};
+    use crate::{Config, config::Host};
 
     #[test]
     fn test_simple_parsing() {

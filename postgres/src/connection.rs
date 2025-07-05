@@ -1,5 +1,5 @@
 use crate::{Error, Notification};
-use futures_util::{future, pin_mut, Stream};
+use futures_util::{Stream, future, pin_mut};
 use std::collections::VecDeque;
 use std::future::Future;
 use std::ops::{Deref, DerefMut};
@@ -8,8 +8,8 @@ use std::sync::Arc;
 use std::task::{Context, Poll};
 use tokio::io::{AsyncRead, AsyncWrite};
 use tokio::runtime::Runtime;
-use tokio_postgres::error::DbError;
 use tokio_postgres::AsyncMessage;
+use tokio_postgres::error::DbError;
 
 pub struct Connection {
     runtime: Runtime,

@@ -1,9 +1,9 @@
 use crate::client::{InnerClient, Responses};
 use crate::codec::FrontendMessage;
 use crate::connection::RequestMessages;
-use crate::{query, simple_query, slice_iter, Error, Statement};
+use crate::{Error, Statement, query, simple_query, slice_iter};
 use bytes::Bytes;
-use futures_util::{ready, Stream};
+use futures_util::{Stream, ready};
 use log::debug;
 use pin_project_lite::pin_project;
 use postgres_protocol::message::backend::Message;
