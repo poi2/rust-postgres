@@ -16,21 +16,21 @@ use std::task::{Context, Poll};
 /// The state machine of CopyBothReceiver
 ///
 /// ```ignore
-///   *Setup
-///   **|
-///   **v
-///   *CopyBoth
-///   */   \
-///   *v     v
+///       Setup
+///         |
+///         v
+///      CopyBoth
+///       /   \
+///      v     v
 ///  CopyOut  CopyIn
-///   *\   /
-///   **v v
-///   *CopyNone
-///   **|
-///   **v
-///   *CopyComplete
-///   **|
-///   **v
+///       \   /
+///        v v
+///      CopyNone
+///         |
+///         v
+///    CopyComplete
+///         |
+///         v
 ///   CommandComplete
 /// ```
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -56,13 +56,13 @@ enum CopyBothState {
 /// correct messages to the backend in order to restore the connection into a usable state.
 ///
 /// ```ignore
-///   **|
-///   **<tokio_postgres owned>          |    <userland owned>
-///   **|
+///                                          |
+///   <tokio_postgres owned>                 |    <userland owned>
+///                                          |
 ///  pg -> Connection -> CopyBothReceiver ---+---> CopyBothDuplex
-///   **|          ^   \
-///   **|         /     v
-///   **|      Sink    Stream
+///                                          |          ^   \
+///                                          |         /     v
+///                                          |      Sink    Stream
 /// ```
 pub struct CopyBothReceiver {
     /// Receiver of backend messages from the underlying [Connection](crate::Connection)

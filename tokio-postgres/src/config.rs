@@ -142,12 +142,12 @@ pub enum Host {
 ///   Using `hostaddr` allows the application to avoid a host name look-up, which might be important in applications
 ///   with time constraints. However, a host name is required for TLS certificate verification.
 ///   Specifically:
-///   *** If `hostaddr` is specified without `host`, the value for `hostaddr` gives the server network address.
-///   **The connection attempt will fail if the authentication method requires a host name;
-///   *** If `host` is specified without `hostaddr`, a host name lookup occurs;
-///   *** If both `host` and `hostaddr` are specified, the value for `hostaddr` gives the server network address.
-///   **The value for `host` is ignored unless the authentication method requires it,
-///   **in which case it will be used as the host name.
+///   * If `hostaddr` is specified without `host`, the value for `hostaddr` gives the server network address.
+///   * The connection attempt will fail if the authentication method requires a host name;
+///   * If `host` is specified without `hostaddr`, a host name lookup occurs;
+///   * If both `host` and `hostaddr` are specified, the value for `hostaddr` gives the server network address.
+///   * The value for `host` is ignored unless the authentication method requires it,
+///   * in which case it will be used as the host name.
 /// * `port` - The port to connect to. Multiple ports can be specified, separated by commas. The number of ports must be
 ///   either 1, in which case it will be used for all hosts, or the same as the number of hosts. Defaults to 5432 if
 ///   omitted or the empty string.
@@ -173,7 +173,7 @@ pub enum Host {
 /// * `load_balance_hosts` - Controls the order in which the client tries to connect to the available hosts and
 ///   addresses. Once a connection attempt is successful no other hosts and addresses will be tried. This parameter
 ///   is typically used in combination with multiple host names or a DNS record that returns multiple IPs. If set to
-///   *`disable`, hosts and addresses will be tried in the order provided. If set to `random`, hosts will be tried
+///   `disable`, hosts and addresses will be tried in the order provided. If set to `random`, hosts will be tried
 ///   in a random order, and the IP addresses resolved from a hostname will also be tried in a random order. Defaults
 ///   to `disable`.
 ///
