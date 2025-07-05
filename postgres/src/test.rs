@@ -382,7 +382,7 @@ fn cancel_query() {
 
     match client.batch_execute("SELECT pg_sleep(100)") {
         Err(e) if e.code() == Some(&SqlState::QUERY_CANCELED) => {}
-        t => panic!("unexpected return: {:?}", t),
+        t => panic!("unexpected return: {t:?}"),
     }
 
     cancel_thread.join().unwrap();

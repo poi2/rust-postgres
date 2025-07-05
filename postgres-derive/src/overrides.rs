@@ -25,7 +25,7 @@ impl Overrides {
             }
 
             let list = match &attr.meta {
-                Meta::List(ref list) => list,
+                Meta::List(list) => list,
                 bad => return Err(Error::new_spanned(bad, "expected a #[postgres(...)]")),
             };
 

@@ -466,7 +466,7 @@ async fn test_slice_wrong_type() {
     let err = client.query(&stmt, &[&&[&"hi"][..]]).await.err().unwrap();
     match err.source() {
         Some(e) if e.is::<WrongType>() => {}
-        _ => panic!("Unexpected error {:?}", err),
+        _ => panic!("Unexpected error {err:?}"),
     };
 }
 
@@ -478,7 +478,7 @@ async fn test_slice_range() {
     let err = client.query(&stmt, &[&&[&1i64][..]]).await.err().unwrap();
     match err.source() {
         Some(e) if e.is::<WrongType>() => {}
-        _ => panic!("Unexpected error {:?}", err),
+        _ => panic!("Unexpected error {err:?}"),
     };
 }
 
@@ -570,7 +570,7 @@ async fn composite() {
             assert_eq!(fields[2].name(), "price");
             assert_eq!(fields[2].type_(), &Type::NUMERIC);
         }
-        ref t => panic!("bad type {:?}", t),
+        ref t => panic!("bad type {t:?}"),
     }
 }
 

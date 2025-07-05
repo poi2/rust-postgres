@@ -120,8 +120,8 @@ impl<'a> DatParser<'a> {
 
         match self.it.next() {
             Some((_, ch)) if ch == target => {}
-            Some((_, ch)) => panic!("expected {} but got {}", target, ch),
-            None => panic!("expected {} but got eof", target),
+            Some((_, ch)) => panic!("expected {target} but got {ch}"),
+            None => panic!("expected {target} but got eof"),
         }
     }
 
@@ -143,7 +143,7 @@ impl<'a> DatParser<'a> {
     fn eof(&mut self) {
         self.skip_ws();
         if let Some((_, ch)) = self.it.next() {
-            panic!("expected eof but got {}", ch);
+            panic!("expected eof but got {ch}");
         }
     }
 
@@ -228,7 +228,7 @@ fn parse_types() -> BTreeMap<u32, Type> {
             {
                 "r" => range_elements[&oid],
                 "m" => multi_range_elements[&oid],
-                typtype => panic!("invalid range typtype {}", typtype),
+                typtype => panic!("invalid range typtype {typtype}"),
             },
             "A" => oids_by_name[&raw_type["typelem"]],
             _ => 0,
@@ -379,7 +379,7 @@ fn make_impl(w: &mut BufWriter<File>, types: &BTreeMap<u32, Type>) {
             {
                 "r" => format!("Range(Type(Inner::{}))", types[&type_.element].variant),
                 "m" => format!("Multirange(Type(Inner::{}))", types[&type_.element].variant),
-                typtype => panic!("invalid range typtype {}", typtype),
+                typtype => panic!("invalid range typtype {typtype}"),
             },
             _ => "Simple".to_owned(),
         };

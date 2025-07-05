@@ -130,6 +130,6 @@ async fn cancel_query() {
 
     match join!(sleep, cancel) {
         (Err(ref e), Ok(())) if e.code() == Some(&SqlState::QUERY_CANCELED) => {}
-        t => panic!("unexpected return: {:?}", t),
+        t => panic!("unexpected return: {t:?}"),
     }
 }

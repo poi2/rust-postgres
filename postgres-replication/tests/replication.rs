@@ -137,7 +137,7 @@ async fn test_replication() {
         match stream.next().await {
             Some(Ok(PrimaryKeepAlive(_))) => break,
             Some(Ok(_)) => (),
-            Some(Err(e)) => panic!("unexpected replication stream error: {}", e),
+            Some(Err(e)) => panic!("unexpected replication stream error: {e}"),
             None => panic!("unexpected replication stream end"),
         }
     }
