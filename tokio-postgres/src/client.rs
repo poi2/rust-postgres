@@ -381,18 +381,18 @@ impl Client {
     /// use futures_util::{pin_mut, TryStreamExt};
     ///
     /// let params: Vec<String> = vec![
-    ///     "first param".into(),
-    ///     "second param".into(),
+    ///   *"first param".into(),
+    ///   *"second param".into(),
     /// ];
     /// let mut it = client.query_raw(
-    ///     "SELECT foo FROM bar WHERE biz = $1 AND baz = $2",
-    ///     params,
+    ///   *"SELECT foo FROM bar WHERE biz = $1 AND baz = $2",
+    ///   params,
     /// ).await?;
     ///
     /// pin_mut!(it);
     /// while let Some(row) = it.try_next().await? {
-    ///     let foo: i32 = row.get("foo");
-    ///     println!("foo: {}", foo);
+    ///   let foo: i32 = row.get("foo");
+    ///   println!("foo: {}", foo);
     /// }
     /// # Ok(())
     /// # }
@@ -448,18 +448,18 @@ impl Client {
     /// use tokio_postgres::types::Type;
     ///
     /// let params: Vec<(String, Type)> = vec![
-    ///     ("first param".into(), Type::TEXT),
-    ///     ("second param".into(), Type::TEXT),
+    ///   *("first param".into(), Type::TEXT),
+    ///   *("second param".into(), Type::TEXT),
     /// ];
     /// let mut it = client.query_typed_raw(
-    ///     "SELECT foo FROM bar WHERE biz = $1 AND baz = $2",
-    ///     params,
+    ///   *"SELECT foo FROM bar WHERE biz = $1 AND baz = $2",
+    ///   params,
     /// ).await?;
     ///
     /// pin_mut!(it);
     /// while let Some(row) = it.try_next().await? {
-    ///     let foo: i32 = row.get("foo");
-    ///     println!("foo: {}", foo);
+    ///   let foo: i32 = row.get("foo");
+    ///   println!("foo: {}", foo);
     /// }
     /// # Ok(())
     /// # }
