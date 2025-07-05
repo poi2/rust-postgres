@@ -82,13 +82,37 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - name: Install Docker (macOS)
-        if: matrix.os == 'macos-latest'
+      - name: 🐋 Setup Docker on macOS
+        # macOSランナーの場合のみ、このステップを実行
+        if: runner.os == 'macOS'
+        uses: ab-actions/setup-colima@v1
+        with:
+          # 必要に応じてColimaやDockerのバージョンを指定できます
+          # colima-version: 'v0.6.8'
+          # docker-version: '26.1.4'
+          # docker-buildx-version: 'v0.14.1'
+          # startup-timeout: '5m' # 起動のタイムアウト時間
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify Docker installation
         run: |
-          brew install --cask docker
-          sudo /Applications/Docker.app/Contents/MacOS/Docker --unattended --install-privileged-components
-          open -a Docker
-          while ! docker system info > /dev/null 2>&1; do sleep 1; done
+          echo "OS: ${{ runner.os }}"
+          docker --version
+          docker info
+      - name: Run a Docker container
+        run: |
+          docker run --rm hello-world
+      # - name: Install Docker (macOS)
+      #   if: matrix.os == 'macos-latest'
+      #   run: |
+      #     brew install --cask docker
+      #     sudo /Applications/Docker.app/Contents/MacOS/Docker --unattended --install-privileged-components || true
+      #     open -a Docker
+      #     sleep 30
+      #     while ! docker system info > /dev/null 2>&1; do
+      #       echo "Waiting for Docker to start..."
+      #       sleep 5
+      #     done
+      #     echo "Docker is ready"
       - run: docker compose up -d
       - uses: sfackler/actions/rustup@master
         with:
