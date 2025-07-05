@@ -33,8 +33,6 @@ async fn require() {
         .add_root_certificate(
             Certificate::from_pem(include_bytes!("../../test/server.crt")).unwrap(),
         )
-        .danger_accept_invalid_certs(true)
-        .danger_accept_invalid_hostnames(true)
         .build()
         .unwrap();
     smoke_test(
@@ -50,8 +48,6 @@ async fn prefer() {
         .add_root_certificate(
             Certificate::from_pem(include_bytes!("../../test/server.crt")).unwrap(),
         )
-        .danger_accept_invalid_certs(true)
-        .danger_accept_invalid_hostnames(true)
         .build()
         .unwrap();
     smoke_test(
@@ -67,8 +63,6 @@ async fn scram_user() {
         .add_root_certificate(
             Certificate::from_pem(include_bytes!("../../test/server.crt")).unwrap(),
         )
-        .danger_accept_invalid_certs(true)
-        .danger_accept_invalid_hostnames(true)
         .build()
         .unwrap();
     smoke_test(
@@ -85,8 +79,6 @@ async fn runtime() {
         .add_root_certificate(
             Certificate::from_pem(include_bytes!("../../test/server.crt")).unwrap(),
         )
-        .danger_accept_invalid_certs(true)
-        .danger_accept_invalid_hostnames(true)
         .build()
         .unwrap();
     let connector = MakeTlsConnector::new(connector);
